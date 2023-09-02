@@ -5,6 +5,7 @@ import os
 import re
 from typing import List
 import logging
+import mysql.connector
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
@@ -46,3 +47,36 @@ def get_logger() -> logging.Logger:
     handler.setFormatter(RedactingFormatter(PII_FIELDS))
     logger.addHandler(handler)
     return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """ Implement db conectivity """
+    username = os.environ.get('PERSONAL_DATA_DB_USERNAME', 'root')
+    pswd = os.environ.get('PERSONAL_DATA_DB_PASSWORD', '')
+    host = os.environ.get('PERSONAL_DATA_DB_HOST', 'localhost')
+    db_name = os.environ.get('PERSONAL_DATA_DB_NAME')
+    conn = mysql.connector.connect(
+        host=host,
+        database=db_name,
+        user=username,
+        password=pswd
+    )
+    return conn
+
+def main() -> None:
+    """ Implement a main function
+    """
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users;")
+    for row in cursor:
+        message = f"name={row[0]}; email={row[1]}; phone={row[2]}; " +\
+            f"ssn={row[3]}; password={row[4]};ip={row[5]}; " +\
+            f"last_login={row[6]}; user_agent={row[7]};"
+        print(message)
+    cursor.close()
+    db.close()
+
+
+if __name__ == '__main__':
+    main()
