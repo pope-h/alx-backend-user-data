@@ -1,27 +1,29 @@
 #!/usr/bin/env python3
-""" Personal data """
+"""
+Personal data
+"""
 
+
+import logging
 import os
 import re
 from typing import List
-import logging
 import mysql.connector
 
-PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
-def filter_datum(fields: List[str], redaction: str,
-                 message: str, separator: str) -> str:
+def filter_datum(fields: List[str], redaction: str, message: str,
+                 separator: str) -> str:
     """ Replacing """
     for f in fields:
         message = re.sub(rf"{f}=(.*?)\{separator}",
-                         f"{f}={redaction}{separator}", message)
+                         f'{f}={redaction}{separator}', message)
     return message
 
 
 class RedactingFormatter(logging.Formatter):
-    """ Redacting Formatter class
-        """
+    """ RedactingFormatter class. """
 
     REDACTION = "***"
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
@@ -39,8 +41,10 @@ class RedactingFormatter(logging.Formatter):
 
 
 def get_logger() -> logging.Logger:
-    """ Implementing a logger """
-    logger = logging.getLogger('user_data')
+    """ Implementing a logger.
+    """
+
+    logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
     logger.propagate = False
     handler = logging.StreamHandler()
@@ -50,18 +54,19 @@ def get_logger() -> logging.Logger:
 
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
-    """ Implement db conectivity """
-    username = os.environ.get('PERSONAL_DATA_DB_USERNAME', 'root')
-    pswd = os.environ.get('PERSONAL_DATA_DB_PASSWORD', '')
+    """ Implement db conectivity
+    """
+    psw = os.environ.get("PERSONAL_DATA_DB_PASSWORD", "")
+    username = os.environ.get('PERSONAL_DATA_DB_USERNAME', "root")
     host = os.environ.get('PERSONAL_DATA_DB_HOST', 'localhost')
     db_name = os.environ.get('PERSONAL_DATA_DB_NAME')
     conn = mysql.connector.connect(
         host=host,
         database=db_name,
         user=username,
-        password=pswd
-    )
+        password=psw)
     return conn
+
 
 def main() -> None:
     """ Implement a main function
@@ -80,4 +85,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-
