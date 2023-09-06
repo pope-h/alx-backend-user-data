@@ -59,8 +59,7 @@ class BasicAuth(Auth):
         """
         returns the User instance based on his email and password
         """
-        if (user_email is None or not isinstance(user_email, str) or
-                user_pwd is None or not isinstance(user_pwd, str)):
+        if (user_email is None or user_pwd is None):
             return None
         users = User.search({"email": user_email})
         if not users:
