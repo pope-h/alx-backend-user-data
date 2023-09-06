@@ -72,7 +72,6 @@ class BasicAuth(Auth):
         # If the password is not valid, return None
         return None
 
-
     def current_user(self, request=None) -> TypeVar('User'):
         """
         overloads Auth and retrieves the User instance for a request
