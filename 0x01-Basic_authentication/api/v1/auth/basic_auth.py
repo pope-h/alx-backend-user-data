@@ -7,6 +7,7 @@ import binascii
 from typing import TypeVar
 from api.v1.auth.auth import Auth
 from models.user import User
+from flask import request
 
 
 class BasicAuth(Auth):
