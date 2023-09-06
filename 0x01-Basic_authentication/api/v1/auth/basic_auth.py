@@ -2,10 +2,10 @@
 """
 Basic Auth module
 """
-from api.v1.auth.auth import Auth
 import base64
 import binascii
 from typing import TypeVar
+from api.v1.auth.auth import Auth
 from models.user import User
 
 
@@ -65,7 +65,9 @@ class BasicAuth(Auth):
         users = User.search({"email": user_email})
         if not users:
             return None
-        if users[0].is_valid_password(user_pwd):
-            return users[0]
+
+        for user in users:
+            if user.is_valid_password(user_pwd):
+                return user
         # If the password is not valid, return None
         return None
