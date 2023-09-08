@@ -18,9 +18,9 @@ def login():
     user_email = request.form.get('email')
     user_pwd = request.form.get('password')
     if not user_email:
-        return jsonify({ "error": "email missing" }), 400
+        return jsonify({"error": "email missing"}), 400
     if not user_pwd:
-        return jsonify({ "error": "password missing" }), 400
+        return jsonify({"error": "password missing"}), 400
     users = User.search({"email": user_email})
     if not users:
         return jsonify({"error": "no user found for this email"}), 404
