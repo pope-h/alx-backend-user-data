@@ -39,7 +39,7 @@ def login():
 
 @app_views.route('/auth_session/logout', methods=['DELETE'],
                  strict_slashes='False')
-def destroy_session(self, request=None):
+def destroy_session():
     """ DELETE /auth_session/logout
     Return:
       - Response
