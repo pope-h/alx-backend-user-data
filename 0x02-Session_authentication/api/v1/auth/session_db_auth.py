@@ -8,7 +8,9 @@ from api.v1.app import auth
 class SessionDBAuth(SessionExpAuth):
     """ Session Authentication Class with Database """
     def create_session(self, user_id=None):
-        """ Create a Session ID and store it in the database """
+        """
+        Create a Session ID and store it in the database
+        """
         session_id = super().create_session(user_id)
         if session_id is not None:
             user_session = UserSession(user_id=user_id, session_id=session_id)
