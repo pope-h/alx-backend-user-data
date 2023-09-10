@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
-""" Storage class for authentication """
+"""
+Storage class for authentication
+"""
 from api.v1.auth.session_exp_auth import SessionExpAuth
 from models.user_session import UserSession
 from api.v1.app import auth
 
 
 class SessionDBAuth(SessionExpAuth):
-    """ Session Authentication Class with Database """
+    """
+    Session Authentication Class with Database
+    """
     def create_session(self, user_id=None):
         """
         Create a Session ID and store it in the database
