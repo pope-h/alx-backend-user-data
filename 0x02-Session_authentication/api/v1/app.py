@@ -1,6 +1,20 @@
 #!/usr/bin/env python3
 """
-Route module for the API
+This script defines the routes for the API and handles authentication.
+
+The following functions are defined in this script:
+
+* `not_found()` - This function handles 404 errors.
+* `unauthorized()` - This function handles 401 errors.
+* `forbidden()` - This function handles 403 errors.
+* `before_request()` - function checks for authentication before every request.
+
+The following variables are defined in this script:
+
+* `app` - The Flask app object.
+* `auth` - The authentication object.
+* `authorized_list` - A list of paths that do not require authentication.
+
 """
 from os import getenv
 from api.v1.views import app_views
@@ -34,19 +48,39 @@ elif getenv('AUTH_TYPE') == 'session_db_auth':
 @app.errorhandler(404)
 def not_found(error) -> str:
     """ Not found handler
+
+    Args:
+        error (Exception): The error that was raised.
+
+    Returns:
+        str: The JSON response that is returned to the client.
     """
     return jsonify({"error": "Not found"}), 404
 
 
 @app.errorhandler(401)
 def unauthorized(error) -> str:
-    """ Unauthorized handler """
+    """ Unauthorized handler
+
+    Args:
+        error (Exception): The error that was raised.
+
+    Returns:
+        str: The JSON response that is returned to the client.
+    """
     return jsonify({"error": "Unauthorized"}), 401
 
 
 @app.errorhandler(403)
 def forbidden(error):
-    """ forbidden handler """
+    """ forbidden handler
+
+    Args:
+        error (Exception): The error that was raised.
+
+    Returns:
+        str: The JSON response that is returned to the client.
+    """
     return jsonify({"error": "Forbidden"}), 403
 
 
@@ -54,6 +88,10 @@ def forbidden(error):
 def before_request():
     """
     handler before_request
+
+    Checks for authentication before every request.
+    If the request requires authentication and the user is not authenticated,
+    the function aborts the request with a 401 error.
     """
     authorized_list = ['/api/v1/status/',
                        '/api/v1/unauthorized/',
