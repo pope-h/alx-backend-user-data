@@ -38,7 +38,7 @@ class DB:
         if not email or not hashed_password:
             return
         user = User(email=email, hashed_password=hashed_password)
-        session = self.__session
+        session = self._session
         session.add(user)
         session.commit()
         return user
