@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
-"""DB module
+"""Data Base module
 """
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
-from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import InvalidRequestError
-
+from sqlalchemy.orm.exc import NoResultFound
 from user import Base, User
 
 
 class DB:
-    """DB class
+    """Data Base class
+
     """
 
     def __init__(self) -> None:
         """Initialize a new DB instance
         """
-        self._engine = create_engine("sqlite:///a.db", echo=True)
+        self._engine = create_engine("sqlite:///a.db", echo=False)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None
@@ -33,30 +33,40 @@ class DB:
         return self.__session
 
     def add_user(self, email: str, hashed_password: str) -> User:
+        """ Adds a new user
         """
-        method to save the user to the database
-        """
-        user = User(email=email, hashed_password=hashed_password)
-        self._session.add(user)
-        self._session.commit()
-        return user
+        new_user = User(email=email, hashed_password=hashed_password)
+
+        session = self._session
+        session.add(new_user)
+        session.commit()
+
+        return new_user
 
     def find_user_by(self, **kwargs) -> User:
-        """Find a user by keyword arguments
-
-    Args:
-        **kwargs: The keyword arguments to filter by
-
-    Returns:
-        User: The user object
-
-    Raises:
-        NoResultFound: When no user is found
-        InvalidRequestError: When invalid query arguments are passed
-    """
+        """ find user by specification
+            which must be a key word arg
+        """
+        session = self._session
         try:
-            return self._session.query(User).filter_by(**kwargs).first()
-        except NoResultFound:
-            raise NoResultFound("No user found")
-        except InvalidRequestError as e:
-            raise InvalidRequestError(str(e))
+            user = session.query(User).filter_by(**kwargs).one()
+            return user
+        except (NoResultFound, InvalidRequestError):
+            raise
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """Update user by *arg
+           with attributes in **kwargs
+        """
+        session = self._session
+        user = self.find_user_by(id=user_id)
+        attr = user.__table__.columns.keys()
+        kargs = kwargs.items()
+
+        for key, val in kargs:
+            if key not in attr:
+                raise ValueError
+        setattr(user, key, val)
+
+        session.add(user)
+        session.commit()
