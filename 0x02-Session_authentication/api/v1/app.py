@@ -15,11 +15,13 @@ import os
 app = Flask(__name__)
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+
+auth_type = getenv("AUTH_TYPE")
 auth = None
 
 
 @app.before_request
-def authenticate():
+def auth():
     """ Path authenticator
     """
     excluded = [
@@ -27,7 +29,7 @@ def authenticate():
         '/api/v1/unauthorized/',
         '/api/v1/forbidden/',
         '/api/v1/auth_session/login/']
-    auth = getenv("AUTH_TYPE")
+    # auth = getenv("AUTH_TYPE")
 
     if auth and auth == 'auth':
         auth = Auth()
