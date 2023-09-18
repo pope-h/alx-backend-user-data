@@ -19,7 +19,7 @@ auth = None
 
 
 @app.before_request
-def auth():
+def authenticate():
     """ Path authenticator
     """
     excluded = [
